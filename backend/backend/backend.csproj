@@ -11,6 +11,8 @@
     <None Remove="MySql.Data" />
     <None Remove="SqlSugarCore" />
     <None Remove="System.IdentityModel.Tokens.Jwt" />
+    <None Remove="Configs\" />
+    <None Remove="Entity\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.15" />
@@ -18,5 +20,9 @@
     <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="SqlSugarCore" Version="5.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configs\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
