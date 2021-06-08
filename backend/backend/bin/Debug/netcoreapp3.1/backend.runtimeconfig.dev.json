@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "/Users/lykdsb/.dotnet/store/|arch|/|tfm|",
-      "/Users/lykdsb/.nuget/packages"
+      "C:\\Users\\Thumbby\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Thumbby\\.nuget\\packages"
     ]
   }
 }
