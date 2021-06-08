@@ -1,3 +1,6 @@
-backend/.vs/
+backend
+/.vs/
 /web_front/
+/backend/bin/
+/backend/obj/
 
