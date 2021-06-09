@@ -2,6 +2,7 @@
 using SqlSugar;
 namespace backend.Models
 {
+    [SugarTable("ApplicationForRepairing")]
     public class ApplicationForRepairing
     {
         public int ApplicationID { get; set; }
