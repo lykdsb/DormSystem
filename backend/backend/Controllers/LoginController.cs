@@ -1,5 +1,4 @@
 ﻿using System;
-using SqlSugar;
 using Microsoft.AspNetCore.Mvc;
 using backend.Configs;
 using backend.Models;
@@ -8,11 +7,10 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class LoginController:ControllerBase
     {
         [AllowAnonymous]
@@ -24,7 +22,7 @@ namespace backend.Controllers
             var user = DBContext.DBstatic.Queryable<User>().Single(c=>c.UserID==userID);
             if (user == null || !password.Equals(user.Password))
             {
-                return Ok("Wrong userID or password");
+                return NoContent();
             }
             else
             {
@@ -45,7 +43,10 @@ namespace backend.Controllers
                     expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: creds);
                 //返回 token 给客户端使用
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token)
+                return Ok(new
+                {
+                    Token=new JwtSecurityTokenHandler().WriteToken(token)
+                }
                 ) ;
             }
         }
