@@ -23,7 +23,7 @@ namespace backend.Controllers
             if (user == null) return NoContent();
             else if (user.Access == 0)
             {
-                var userDorm = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserId == userID);
+                var userDorm = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserID == userID);
                 if (userDorm == null) return NoContent();
                 return Ok(
                     new

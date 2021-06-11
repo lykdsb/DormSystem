@@ -6,7 +6,7 @@ namespace backend.Models
     public class UserDorm
     {
         public int IsLeader { get; set; }
-        public int UserId { get; set; }
+        public int UserID { get; set; }
         public int DormID { get; set; }
     }
 }

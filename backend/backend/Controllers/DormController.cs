@@ -50,5 +50,63 @@ namespace backend.Controllers
                     );
             }
         }
+        [HttpPost]
+        public IActionResult arrangeDorm([FromBody]UserDorm userDorm)
+        {
+            var auth = HttpContext.AuthenticateAsync();
+            var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
+            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+            if (user == null) return NoContent();
+            else if (user.Access == 1)
+            {
+                int dormNum = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from userDorm where dormID = {userDorm.DormID}").ToList().Count;
+                var dormMaxNum = DBContext.DBstatic.Queryable<Dorm>().Single(c => c.DormID == userDorm.DormID).MaxNum;
+                if (dormNum >= dormMaxNum)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    DBContext.DBstatic.Insertable<UserDorm>(userDorm).ExecuteCommand();
+                    return Ok(
+                        new {
+                            userDorm= userDorm
+                        }
+                        );
+                }
+
+            }
+            else return NoContent();
+        }
+        [HttpPut]
+        public IActionResult changeDorm([FromBody] UserDorm userDorm)
+        {
+            var auth = HttpContext.AuthenticateAsync();
+            var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
+            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+            if (user == null) return NoContent();
+            else if (user.Access == 1)
+            {
+                int dormNum = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from userDorm where dormID = {userDorm.DormID}").ToList().Count;
+                var dormMaxNum = DBContext.DBstatic.Queryable<Dorm>().Single(c => c.DormID == userDorm.DormID).MaxNum;
+                if (dormNum >= dormMaxNum)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    //此处需要修改
+                    DBContext.DBstatic.Updateable<UserDorm>(userDorm).ExecuteCommand();
+                    return Ok(
+                        new
+                        {
+                            userDorm = userDorm 
+                        }
+                        );
+                }
+
+            }
+            else return NoContent();
+        }
     }
 }
