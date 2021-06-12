@@ -19,10 +19,27 @@ namespace backend.Controllers
         {
             var userID = userInput.UserID;
             var password = userInput.Password;
-            var user = DBContext.DBstatic.Queryable<User>().Single(c=>c.UserID==userID);
+            User user;
+            try
+            {
+                user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success =0,
+                    msg= e.Message
+                }
+                );
+            }
             if (user == null || !password.Equals(user.Password))
             {
-                return NoContent();
+                return Ok(new
+                {
+                    success = 0,
+                    msg = "Wrong userID or password"
+                }) ;
             }
             else
             {
@@ -45,7 +62,8 @@ namespace backend.Controllers
                 //返回 token 给客户端使用
                 return Ok(new
                 {
-                    Token=new JwtSecurityTokenHandler().WriteToken(token)
+                    success =1,
+                    token=new JwtSecurityTokenHandler().WriteToken(token)
                 }
                 ) ;
             }

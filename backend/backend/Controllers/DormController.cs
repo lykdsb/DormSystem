@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
-
+using backend.Mappers;
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,27 +16,47 @@ namespace backend.Controllers
     public class DormController:ControllerBase
     {
         [HttpGet]
-        public IActionResult getDormInfo()
+        public IActionResult GetDormInfo()
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
-            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
-            if (user == null) return NoContent();
+            User user;
+            List<UserDorm> userDorms;
+            List<UserDorm> roomates;
+            int dormID;
+            try
+            {
+                user = UserMapper.GetUserByID(userID);
+                userDorms = UserDormMapper.GetUserDorms();
+                dormID = UserDormMapper.GetDormID(userID);
+                roomates = UserDormMapper.GetRoomates(dormID);
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
+                });
+            }
+            if (user == null)
+                return Ok(new
+                {
+                    success =0,
+                    msg= "No this user"
+                });
             else if (user.Access == 1)
             {
-                var userDorms = DBContext.DBstatic.Queryable<UserDorm>().ToList();
-                return Ok(
-                 new
+                return Ok(new
                  {
+                     success = 1,
                      dormList = userDorms
                  }
                  );
             }
             else
             {
-                var dormID = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserID == userID).DormID;
-                var roomates = DBContext.DBstatic.Queryable<UserDorm>().Where(c => c.DormID == dormID).ToList();
-                List<int> roomateID=new List<int>();
+                List<int> roomateID = new List<int>();
                 foreach (UserDorm ud in roomates)
                 {
                     roomateID.Add(ud.UserID);
@@ -44,6 +64,7 @@ namespace backend.Controllers
                 return Ok(
                     new
                     {
+                        success =1 ,
                         dormID = dormID,
                         roomateID = roomateID
                     }
@@ -51,62 +72,102 @@ namespace backend.Controllers
             }
         }
         [HttpPost]
-        public IActionResult arrangeDorm([FromBody]UserDorm userDorm)
+        public IActionResult ArrangeDorm([FromBody]UserDorm userDorm)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
-            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
-            if (user == null) return NoContent();
-            else if (user.Access == 1)
+            var user = UserMapper.GetUserByID(userID);
+            int dormNum;
+            int dormMaxNum;
+            try
             {
-                int dormNum = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from userDorm where dormID = {userDorm.DormID}").ToList().Count;
-                var dormMaxNum = DBContext.DBstatic.Queryable<Dorm>().Single(c => c.DormID == userDorm.DormID).MaxNum;
+                dormNum = UserDormMapper.GetDormNum(userDorm.DormID);
+                dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
+                });
+            }
+            if (user.Access == 1)
+            {
                 if (dormNum >= dormMaxNum)
                 {
-                    return NoContent();
+                    return Ok(new
+                    {
+                        success =0,
+                        msg="No more position"
+                    });
                 }
                 else
                 {
-                    DBContext.DBstatic.Insertable<UserDorm>(userDorm).ExecuteCommand();
+                    try
+                    {
+                        UserDormMapper.ArrangeDorm(userDorm);
+                    }
+                    catch (Exception e)
+                    {
+                        return Ok(new
+                        {
+                            success = 0,
+                            msg = e.Message
+
+                        });
+                    }
                     return Ok(
                         new {
+                            success=1,
                             userDorm= userDorm
                         }
                         );
                 }
 
             }
-            else return NoContent();
+            else return Ok(new {
+                success =0,
+                msg="Not Authorized"
+            });
         }
         [HttpPut]
-        public IActionResult changeDorm([FromBody] UserDorm userDorm)
+        public IActionResult ChangeDorm([FromBody] UserDorm userDorm)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
-            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
-            if (user == null) return NoContent();
+            User user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+            int dormNum;
+            int dormMaxNum;
+            try
+            {
+                user = UserMapper.GetUserByID(userID);
+                dormNum = UserDormMapper.GetDormNum(userDorm.DormID);
+                dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
+            }
+            catch (Exception e) { return Ok(new { success = 0, msg = e.Message }); }
+            if (user == null) return Ok(new { success = 0, msg = "No this user" });
             else if (user.Access == 1)
             {
-                int dormNum = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from userDorm where dormID = {userDorm.DormID}").ToList().Count;
-                var dormMaxNum = DBContext.DBstatic.Queryable<Dorm>().Single(c => c.DormID == userDorm.DormID).MaxNum;
                 if (dormNum >= dormMaxNum)
                 {
-                    return NoContent();
+                    return Ok(new { success = 0, msg = "No more position" });
                 }
                 else
                 {
                     //此处需要修改
-                    DBContext.DBstatic.Updateable<UserDorm>(userDorm).ExecuteCommand();
+                    UserDormMapper.ChangeDorm(userDorm);
                     return Ok(
                         new
                         {
-                            userDorm = userDorm 
+                            success = 1,
+                            userDorm = userDorm
                         }
                         );
                 }
 
             }
-            else return NoContent();
+            else return Ok(new { success = 0, msg = "Not Authorized" });
         }
     }
 }
