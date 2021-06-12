@@ -1,7 +1,7 @@
 ﻿using System;
 using backend.Configs;
 using backend.Models;
-using System.Collections.Generic;
+
 namespace backend.Mappers
 {
     public class DormMapper

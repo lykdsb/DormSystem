@@ -65,7 +65,7 @@ namespace backend.Mappers
             int num = 0;
             try
             {
-                num = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from userDorm where dormID = {dormID}").ToList().Count;
+                num = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from UserDorm where dormID = {dormID}").ToList().Count;
             }
             catch (Exception e)
             {
