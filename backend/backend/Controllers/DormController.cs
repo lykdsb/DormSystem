@@ -149,7 +149,6 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    //此处需要修改
                     try
                     {
                         UserDormMapper.ChangeDorm(userDorm);
