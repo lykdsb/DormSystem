@@ -22,7 +22,7 @@ namespace backend.Controllers
         {
             try
             {
-                afc.ApplicationDate = DateTime.Now;
+                afc.ApplicationDate = DateTime.Today;
                 ChangeMapper.Submit(afc);
             }
             catch (Exception e)
