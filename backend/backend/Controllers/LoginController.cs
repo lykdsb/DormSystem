@@ -33,7 +33,7 @@ namespace backend.Controllers
                 }
                 );
             }
-            if (user == null || !password.Equals(user.Password))
+            if (!password.Equals(user.Password))
             {
                 return Ok(new
                 {

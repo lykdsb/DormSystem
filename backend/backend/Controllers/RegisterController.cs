@@ -16,7 +16,7 @@ namespace backend.Controllers
             int userID;
             try
             {
-                userID = UserMapper.addUser(userInput);
+                userID = UserMapper.AddUser(userInput);
             }
             catch (Exception e)
             {

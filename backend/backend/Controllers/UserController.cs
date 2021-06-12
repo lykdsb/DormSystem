@@ -26,7 +26,7 @@ namespace backend.Controllers
             {
                 user = UserMapper.GetUserByID(userID);
                 userDorm = UserDormMapper.GetUserDormByUserID(userID);
-                users = UserMapper.getUsers();
+                users = UserMapper.GetUsers();
             }
             catch (Exception e)
             {
@@ -37,12 +37,7 @@ namespace backend.Controllers
                 }
                 );
             }
-            if (user == null) return Ok(new
-            {
-                success = 1,
-                msg = "No this user"
-            });
-            else if (user.Access == 0)
+            if (user.Access == 0)
                 return Ok(new
                 {
                     success =1,

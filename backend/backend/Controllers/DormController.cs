@@ -39,13 +39,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            if (user == null)
-                return Ok(new
-                {
-                    success =0,
-                    msg= "No this user"
-                });
-            else if (user.Access == 1)
+            if (user.Access == 1)
             {
                 return Ok(new
                  {
@@ -76,11 +70,12 @@ namespace backend.Controllers
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
-            var user = UserMapper.GetUserByID(userID);
+            User user;
             int dormNum;
             int dormMaxNum;
             try
             {
+                user = UserMapper.GetUserByID(userID);
                 dormNum = UserDormMapper.GetDormNum(userDorm.DormID);
                 dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
             }
@@ -146,8 +141,7 @@ namespace backend.Controllers
                 dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
             }
             catch (Exception e) { return Ok(new { success = 0, msg = e.Message }); }
-            if (user == null) return Ok(new { success = 0, msg = "No this user" });
-            else if (user.Access == 1)
+            if (user.Access == 1)
             {
                 if (dormNum >= dormMaxNum)
                 {
@@ -156,7 +150,18 @@ namespace backend.Controllers
                 else
                 {
                     //此处需要修改
-                    UserDormMapper.ChangeDorm(userDorm);
+                    try
+                    {
+                        UserDormMapper.ChangeDorm(userDorm);
+                    }
+                    catch (Exception e)
+                    {
+                        return Ok(new
+                        {
+                            success = 0,
+                            msg = e.Message
+                        });
+                    }
                     return Ok(
                         new
                         {

@@ -12,6 +12,7 @@ namespace backend.Mappers
             try
             {
                 user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+                if (user == null) throw new Exception("No this user");
             }
             catch (Exception e)
             {
@@ -19,7 +20,7 @@ namespace backend.Mappers
             }
             return user;
         }
-        public static int addUser(User user)
+        public static int AddUser(User user)
         {
             int userID;
             try
@@ -33,7 +34,7 @@ namespace backend.Mappers
             }
             return userID;
         }
-        public static List<User> getUsers()
+        public static List<User> GetUsers()
         {
             List<User> users;
             try

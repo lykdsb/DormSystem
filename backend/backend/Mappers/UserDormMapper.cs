@@ -25,6 +25,7 @@ namespace backend.Mappers
             try
             {
                 userDorm = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserID == userID);
+                if (userDorm == null) throw new Exception("No this userDorm");
             }
             catch (Exception e)
             {
@@ -37,7 +38,7 @@ namespace backend.Mappers
             int dormID;
             try
             {
-                dormID = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserID == userID).DormID;
+                dormID = GetUserDormByUserID(userID).DormID;
             }
             catch (Exception e)
             {
@@ -87,6 +88,14 @@ namespace backend.Mappers
         {
             try
             {
+                if (userDorm.IsLeader == 1)
+                {
+                    List<UserDorm> roomates=GetRoomates(userDorm.DormID);
+                    foreach (UserDorm ud in roomates)
+                    {
+                        if (ud.IsLeader == 1) throw new Exception("There`s already a leader");
+                    }
+                }
                 DBContext.DBstatic.Updateable<UserDorm>(userDorm).ExecuteCommand();
             }
             catch (Exception e)
