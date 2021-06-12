@@ -15,15 +15,15 @@ namespace backend.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class RepairController:ControllerBase
+    public class ChangeController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Submit([FromBody]ApplicationForRepairing afr)
+        public IActionResult Submit([FromBody] ApplicationForChanging afc)
         {
             try
             {
-                afr.ApplicationDate = DateTime.Now;
-                RepairMapper.Submit(afr);
+                afc.ApplicationDate = DateTime.Now;
+                ChangeMapper.Submit(afc);
             }
             catch (Exception e)
             {
@@ -46,13 +46,13 @@ namespace backend.Controllers
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
             User user;
-            List<ApplicationForRepairing> myApplications;
-            List<ApplicationForRepairing> applicationsNotCompleted;
+            List<ApplicationForChanging> myApplications;
+            List<ApplicationForChanging> applicationsNotCompleted;
             try
             {
                 user = UserMapper.GetUserByID(userID);
-                myApplications = RepairMapper.GetMine(userID);
-                applicationsNotCompleted = RepairMapper.GetNotCompleted();
+                myApplications = ChangeMapper.GetMine(userID);
+                applicationsNotCompleted = ChangeMapper.GetNotCompleted();
 
             }
             catch (Exception e)
@@ -71,7 +71,8 @@ namespace backend.Controllers
                     applications = myApplications
                 });
             }
-            else {
+            else
+            {
                 return Ok(new
                 {
                     success = 1,
@@ -80,13 +81,13 @@ namespace backend.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Deal(ApplicationForRepairing afr)
+        public IActionResult Deal(ApplicationForChanging afc)
         {
             int applicationID;
             try
             {
-                applicationID = afr.ApplicationID;
-                RepairMapper.Deal(applicationID);
+                applicationID = afc.ApplicationID;
+                ChangeMapper.Deal(applicationID);
             }
             catch (Exception e)
             {
@@ -98,7 +99,7 @@ namespace backend.Controllers
             }
             return Ok(new
             {
-                success =1,
+                success = 1,
             });
         }
     }
