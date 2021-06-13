@@ -64,3 +64,8 @@
 /Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/runtimes/win/lib/netstandard2.0/System.Data.SqlClient.dll
 /Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
 /Users/lykdsb/Desktop/repos/DormSystem/backend/backend/obj/Debug/netcoreapp3.1/backend.csproj.CopyComplete
+/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/Microsoft.OpenApi.dll
+/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/Swashbuckle.AspNetCore.Swagger.dll
+/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/bin/Debug/netcoreapp3.1/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/obj/Debug/netcoreapp3.1/backend.MvcApplicationPartsAssemblyInfo.cs

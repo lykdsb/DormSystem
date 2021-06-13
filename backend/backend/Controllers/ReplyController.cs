@@ -36,7 +36,7 @@ namespace backend.Controllers
                 success = 1
             });
         }
-        [HttpGet]
+        [HttpGet("{postID}")]
         public IActionResult GetReplys(int postID)
         {
             List<Reply> replys;

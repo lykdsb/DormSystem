@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend.Mappers;
 namespace backend.Controllers
 {
     [ApiController]
@@ -22,7 +23,7 @@ namespace backend.Controllers
             User user;
             try
             {
-                user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+                user = UserMapper.GetUserByID(userID);
             }
             catch (Exception e)
             {

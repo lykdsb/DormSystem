@@ -88,7 +88,7 @@ namespace backend.Controllers
                 works = works
             });
         }
-        [HttpPatch]
+        [HttpPatch("{workID}")]
         public IActionResult Done(int workID)
         {
             try

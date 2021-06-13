@@ -79,7 +79,7 @@ namespace backend.Controllers
                 });
             }
         }
-        [HttpPatch]
+        [HttpPatch("{applicationID}")]
         public IActionResult Deal(int applicationID)
         {
             try
