@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using backend.Configs;
+using backend.Mappers;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using System.Linq;
 using System.Security.Claims;
-
+using System.Collections.Generic;
 namespace backend.Controllers
 {
     [ApiController]
@@ -19,33 +19,44 @@ namespace backend.Controllers
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
-            var user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
-            if (user == null) return NoContent();
-            else if (user.Access == 0)
+            User user;
+            UserDorm userDorm;
+            List<User> users;
+            try
             {
-                var userDorm = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserId == userID);
-                if (userDorm == null) return NoContent();
-                return Ok(
-                    new
-                    {
-                        userID = user.UserID,
-                        userName = user.UserName,
-                        dormID = userDorm.DormID
-                    }
-                    );
+                user = UserMapper.GetUserByID(userID);
+                userDorm = UserDormMapper.GetUserDormByUserID(userID);
+                users = UserMapper.GetUsers();
             }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success =0,
+                    msg=e.Message
+                }
+                );
+            }
+            if (user.Access == 0)
+                return Ok(new
+                {
+                    success =1,
+                    userDorm =userDorm
+                }
+                );
             else
             {
-                var users = DBContext.DBstatic.Queryable<User>().ToList();
                 foreach (User u in users)
                 {
                     u.Password = "";
                 }
-                   return Ok(
-                    new {
-                        userList = users
-                    }
-                    );
+                return Ok(
+                 new
+                 {
+                     success=1,
+                     userList = users
+                 }
+                 );
             }
             
         }

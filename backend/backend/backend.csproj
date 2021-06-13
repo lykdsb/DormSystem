@@ -13,6 +13,8 @@
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Configs\" />
     <None Remove="Entity\" />
+    <None Remove="Utils\" />
+    <None Remove="Swashbuckle.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.15" />
@@ -20,9 +22,11 @@
     <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="SqlSugarCore" Version="5.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configs\" />
     <Folder Include="Models\" />
+    <Folder Include="Mappers\" />
   </ItemGroup>
 </Project>

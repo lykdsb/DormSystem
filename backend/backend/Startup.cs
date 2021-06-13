@@ -37,6 +37,7 @@ namespace backend
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GlobalVar.Secret))//拿到SecurityKey
                     };
                 });
+            services.AddSwaggerGen();
             services.AddCors(o => o.AddPolicy("any", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
             services.AddControllers();
         }
@@ -44,6 +45,11 @@ namespace backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

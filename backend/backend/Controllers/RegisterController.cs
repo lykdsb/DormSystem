@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using backend.Configs;
+using backend.Mappers;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 namespace backend.Controllers
@@ -13,17 +13,24 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult Submit([FromBody] User userInput)
         {
+            int userID;
             try
-            {              
-                DBContext.DBstatic.Insertable<User>(userInput).ExecuteCommand();
-                userInput.UserID = DBContext.DBstatic.Queryable<User>().Max<int>("userID");
+            {
+                userID = UserMapper.AddUser(userInput);
             }
             catch (Exception e)
             {
-                return Conflict(new { Error = e.Message });
+                return Ok(
+                    new
+                    {
+                        success = 0,
+                        msg=e.Message
+                    }
+                    );
             }
             return Ok(new {
-                userID = userInput.UserID
+                success =1,
+                userID = userID
             });
         }
     }

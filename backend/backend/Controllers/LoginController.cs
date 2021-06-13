@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using backend.Mappers;
 namespace backend.Controllers
 {
     [ApiController]
@@ -19,10 +20,27 @@ namespace backend.Controllers
         {
             var userID = userInput.UserID;
             var password = userInput.Password;
-            var user = DBContext.DBstatic.Queryable<User>().Single(c=>c.UserID==userID);
-            if (user == null || !password.Equals(user.Password))
+            User user;
+            try
             {
-                return NoContent();
+                user = UserMapper.GetUserByID(userID);
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success =0,
+                    msg= e.Message
+                }
+                );
+            }
+            if (!password.Equals(user.Password))
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = "Wrong userID or password"
+                }) ;
             }
             else
             {
@@ -45,7 +63,8 @@ namespace backend.Controllers
                 //返回 token 给客户端使用
                 return Ok(new
                 {
-                    Token=new JwtSecurityTokenHandler().WriteToken(token)
+                    success =1,
+                    token=new JwtSecurityTokenHandler().WriteToken(token)
                 }
                 ) ;
             }
