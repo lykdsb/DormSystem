@@ -80,13 +80,11 @@ namespace backend.Controllers
                 });
             }
         }
-        [HttpPut]
-        public IActionResult Deal(ApplicationForChanging afc)
+        [HttpPatch]
+        public IActionResult Deal(int applicationID)
         {
-            int applicationID;
             try
             {
-                applicationID = afc.ApplicationID;
                 ChangeMapper.Deal(applicationID);
             }
             catch (Exception e)

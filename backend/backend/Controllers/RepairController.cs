@@ -79,13 +79,11 @@ namespace backend.Controllers
                 });
             }
         }
-        [HttpPut]
-        public IActionResult Deal(ApplicationForRepairing afr)
+        [HttpPatch]
+        public IActionResult Deal(int applicationID)
         {
-            int applicationID;
             try
             {
-                applicationID = afr.ApplicationID;
                 RepairMapper.Deal(applicationID);
             }
             catch (Exception e)
