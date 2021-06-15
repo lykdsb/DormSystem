@@ -64,6 +64,7 @@ namespace backend.Controllers
                 return Ok(new
                 {
                     success =1,
+                    access=user.Access,
                     token=new JwtSecurityTokenHandler().WriteToken(token)
                 }
                 ) ;
