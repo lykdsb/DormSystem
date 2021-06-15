@@ -22,6 +22,10 @@ namespace backend.Controllers
             {
                 reply.ReplyTime = DateTime.Now;
                 ReplyMapper.Reply(reply);
+                return Ok(new
+                {
+                    success = 1
+                });
             }
             catch (Exception e)
             {
@@ -31,10 +35,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1
-            });
+
         }
         [HttpGet("{postID}")]
         public IActionResult GetReplys(int postID)
@@ -43,6 +44,11 @@ namespace backend.Controllers
             try
             {
                 replys = ReplyMapper.GetReplys(postID);
+                return Ok(new
+                {
+                    success = 1,
+                    replys = replys
+                });
             }
             catch (Exception e)
             {
@@ -52,11 +58,6 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
-                replys = replys
-            });
         }
     }
 }

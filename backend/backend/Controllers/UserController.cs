@@ -25,40 +25,42 @@ namespace backend.Controllers
             try
             {
                 user = UserMapper.GetUserByID(userID);
-                userDorm = UserDormMapper.GetUserDormByUserID(userID);
-                users = UserMapper.GetUsers();
+                if (user.Access == 0)
+                {
+                    userDorm = UserDormMapper.GetUserDormByUserID(userID);
+                    return Ok(new
+                    {
+                        success = 1,
+                        userDorm = userDorm
+                    }
+                    );
+                }
+                else
+                {
+                    users = UserMapper.GetUsers();
+                    foreach (User u in users)
+                    {
+                        u.Password = "";
+                    }
+                    return Ok(
+                     new
+                     {
+                         success = 1,
+                         userList = users
+                     }
+                     );
+                }
             }
             catch (Exception e)
             {
                 return Ok(new
                 {
-                    success =0,
-                    msg=e.Message
+                    success = 0,
+                    msg = e.Message
                 }
                 );
             }
-            if (user.Access == 0)
-                return Ok(new
-                {
-                    success =1,
-                    userDorm =userDorm
-                }
-                );
-            else
-            {
-                foreach (User u in users)
-                {
-                    u.Password = "";
-                }
-                return Ok(
-                 new
-                 {
-                     success=1,
-                     userList = users
-                 }
-                 );
-            }
-            
+
         }
     }
 }

@@ -25,15 +25,6 @@ namespace backend.Controllers
             {
                 user = UserMapper.GetUserByID(userID);
                 userDorm = UserDormMapper.GetUserDormByUserID(userID);
-            }
-            catch (Exception e)
-            {
-                return Ok(new
-                {
-                    success = 0,
-                    msg = e.Message
-                });
-            }
             if (user.Access == 1 || userDorm.IsLeader == 0)
             {
                 return Ok(new
@@ -44,21 +35,19 @@ namespace backend.Controllers
             }
             else
             {
-                try
-                {
-                    WorkMapper.ArrageWork(work);
-                }
-                catch (Exception e)
-                {
-                    return Ok(new
-                    {
-                        success = 0,
-                        msg = e.Message
-                    });
-                }
+                WorkMapper.ArrageWork(work);
                 return Ok(new
                 {
                     success = 1,
+                });
+            }
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
                 });
             }
         }
@@ -73,7 +62,14 @@ namespace backend.Controllers
             {
                 user = UserMapper.GetUserByID(userID);
                 works = WorkMapper.GetWorks(userID);
+            return Ok(new
+            {
+                success = 1,
+                works = works
+            });
             }
+
+
             catch (Exception e)
             {
                 return Ok(new
@@ -82,19 +78,19 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
-                works = works
-            });
         }
         [HttpPatch("{workID}")]
         public IActionResult Done(int workID)
         {
             try
             {
-                WorkMapper.Done(workID);
+            WorkMapper.Done(workID);
+            return Ok(new
+            {
+                success = 1,
+            });
             }
+
             catch (Exception e)
             {
                 return Ok(new
@@ -103,10 +99,6 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
-            });
         }
     }
 }

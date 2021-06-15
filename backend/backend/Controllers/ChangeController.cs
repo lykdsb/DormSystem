@@ -24,6 +24,11 @@ namespace backend.Controllers
             {
                 afc.ApplicationDate = DateTime.Today;
                 ChangeMapper.Submit(afc);
+                return Ok(new
+                {
+                    success = 1,
+
+                });
             }
             catch (Exception e)
             {
@@ -33,11 +38,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
 
-            });
 
         }
         [HttpGet]
@@ -51,21 +52,12 @@ namespace backend.Controllers
             try
             {
                 user = UserMapper.GetUserByID(userID);
-                myApplications = ChangeMapper.GetMine(userID);
-                applicationsNotCompleted = ChangeMapper.GetNotCompleted();
-
-            }
-            catch (Exception e)
-            {
-                return Ok(new
-                {
-                    success = 0,
-                    msg = e.Message
-                });
-            }
+                
+                
             if (user.Access == 0)
             {
-                return Ok(new
+                    myApplications = ChangeMapper.GetMine(userID);
+                    return Ok(new
                 {
                     success = 1,
                     applications = myApplications
@@ -73,10 +65,20 @@ namespace backend.Controllers
             }
             else
             {
-                return Ok(new
+                    applicationsNotCompleted = ChangeMapper.GetNotCompleted();
+                    return Ok(new
                 {
                     success = 1,
                     applicaitons = applicationsNotCompleted
+                });
+            }
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
                 });
             }
         }
@@ -86,6 +88,10 @@ namespace backend.Controllers
             try
             {
                 ChangeMapper.Deal(applicationID);
+                return Ok(new
+                {
+                    success = 1,
+                });
             }
             catch (Exception e)
             {
@@ -95,10 +101,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
-            });
+
         }
     }
 }

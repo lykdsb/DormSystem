@@ -25,21 +25,11 @@ namespace backend.Controllers
             List<Score> myScores;
             try
             {
-                user = UserMapper.GetUserByID(userID);
-                scores = ScoreMapper.GetScores();
-                myScores = ScoreMapper.GetMyScores(userID);
-            }
-            catch (Exception e)
-            {
-                return Ok(new
-                {
-                    success = 0,
-                    msg = e.Message
-                });
-            }
+                user = UserMapper.GetUserByID(userID);             
             if (user.Access == 0)
             {
-                return Ok(new
+                    scores = ScoreMapper.GetScores();
+                    return Ok(new
                 {
                     success = 1,
                     scores = scores
@@ -47,10 +37,20 @@ namespace backend.Controllers
             }
             else
             {
-                return Ok(new
+                    myScores = ScoreMapper.GetMyScores(userID);
+                    return Ok(new
                 {
                     success = 1,
                     scores = myScores
+                });
+            }
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
                 });
             }
         }
@@ -63,16 +63,6 @@ namespace backend.Controllers
             try
             {
                 user = UserMapper.GetUserByID(userID);
-
-            }
-            catch (Exception e)
-            {
-                return Ok(new
-                {
-                    success = 0,
-                    msg = e.Message
-                });
-            }
             if (user.Access == 0)
             {
                 return Ok(new
@@ -83,20 +73,18 @@ namespace backend.Controllers
             }
             else
             {
-                try
-                {
-                    ScoreMapper.Score(score);
-                }
-                catch (Exception e)
-                {
-                    return Ok(new
-                    {
-                        success = 0,
-                        msg = e.Message
-                    });
-                }
+                ScoreMapper.Score(score);
                 return Ok(new {
-                    success=1,
+                    success = 1,
+                });
+            }
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
                 });
             }
         }

@@ -24,6 +24,11 @@ namespace backend.Controllers
             {
                 afr.ApplicationDate = DateTime.Today;
                 RepairMapper.Submit(afr);
+                return Ok(new
+                {
+                    success = 1,
+
+                });
             }
             catch (Exception e)
             {
@@ -33,11 +38,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
 
-            });
 
         }
         [HttpGet]
@@ -51,9 +52,23 @@ namespace backend.Controllers
             try
             {
                 user = UserMapper.GetUserByID(userID);
-                myApplications = RepairMapper.GetMine(userID);
-                applicationsNotCompleted = RepairMapper.GetNotCompleted();
-
+            if (user.Access == 0)
+            {
+                    myApplications = RepairMapper.GetMine(userID);
+                    return Ok(new
+                {
+                    success = 1,
+                    applications = myApplications
+                });
+            }
+            else {
+                    applicationsNotCompleted = RepairMapper.GetNotCompleted();
+                    return Ok(new
+                {
+                    success = 1,
+                    applicaitons = applicationsNotCompleted
+                });
+            }
             }
             catch (Exception e)
             {
@@ -61,21 +76,6 @@ namespace backend.Controllers
                 {
                     success = 0,
                     msg = e.Message
-                });
-            }
-            if (user.Access == 0)
-            {
-                return Ok(new
-                {
-                    success = 1,
-                    applications = myApplications
-                });
-            }
-            else {
-                return Ok(new
-                {
-                    success = 1,
-                    applicaitons = applicationsNotCompleted
                 });
             }
         }
@@ -85,6 +85,10 @@ namespace backend.Controllers
             try
             {
                 RepairMapper.Deal(applicationID);
+                return Ok(new
+                {
+                    success = 1,
+                });
             }
             catch (Exception e)
             {
@@ -94,10 +98,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success =1,
-            });
+
         }
     }
 }

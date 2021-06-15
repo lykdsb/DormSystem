@@ -22,6 +22,10 @@ namespace backend.Controllers
             {
                 post.PostTime = DateTime.Now;
                 PostMapper.Post(post);
+                return Ok(new
+                {
+                    success = 1
+                });
             }
             catch (Exception e)
             {
@@ -31,10 +35,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1
-            });
+
         }
         [HttpGet]
         public IActionResult GetPosts()
@@ -43,6 +44,11 @@ namespace backend.Controllers
             try
             {
                 posts = PostMapper.GetPosts();
+                return Ok(new
+                {
+                    success = 1,
+                    posts = posts
+                });
             }
             catch (Exception e)
             {
@@ -52,11 +58,7 @@ namespace backend.Controllers
                     msg = e.Message
                 });
             }
-            return Ok(new
-            {
-                success = 1,
-                posts = posts
-            });
+
         }
     }
 }

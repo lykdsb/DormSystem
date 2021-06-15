@@ -17,6 +17,11 @@ namespace backend.Controllers
             try
             {
                 userID = UserMapper.AddUser(userInput);
+                return Ok(new
+                {
+                    success = 1,
+                    userID = userID
+                });
             }
             catch (Exception e)
             {
@@ -28,10 +33,7 @@ namespace backend.Controllers
                     }
                     );
             }
-            return Ok(new {
-                success =1,
-                userID = userID
-            });
+
         }
     }
 }

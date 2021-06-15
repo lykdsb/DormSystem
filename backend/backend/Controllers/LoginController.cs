@@ -16,7 +16,7 @@ namespace backend.Controllers
     {
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Submit([FromBody]User userInput)
+        public IActionResult Submit([FromBody] User userInput)
         {
             var userID = userInput.UserID;
             var password = userInput.Password;
@@ -24,23 +24,13 @@ namespace backend.Controllers
             try
             {
                 user = UserMapper.GetUserByID(userID);
-            }
-            catch (Exception e)
-            {
-                return Ok(new
-                {
-                    success =0,
-                    msg= e.Message
-                }
-                );
-            }
             if (!password.Equals(user.Password))
             {
                 return Ok(new
                 {
                     success = 0,
                     msg = "Wrong userID or password"
-                }) ;
+                });
             }
             else
             {
@@ -63,11 +53,21 @@ namespace backend.Controllers
                 //返回 token 给客户端使用
                 return Ok(new
                 {
-                    success =1,
-                    access=user.Access,
-                    token=new JwtSecurityTokenHandler().WriteToken(token)
+                    success = 1,
+                    access = user.Access,
+                    token = new JwtSecurityTokenHandler().WriteToken(token)
                 }
-                ) ;
+                );
+            }
+            }
+            catch (Exception e)
+            {
+                return Ok(new
+                {
+                    success = 0,
+                    msg = e.Message
+                }
+                );
             }
         }
     }
