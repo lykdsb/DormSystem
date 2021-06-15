@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,7 +18,7 @@ namespace backend.Controllers
     {
 
         [HttpGet]
-        public IActionResult GetScores()
+        public async Task<IActionResult> GetScores()
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -25,23 +27,24 @@ namespace backend.Controllers
             List<Score> myScores;
             try
             {
-                user = UserMapper.GetUserByID(userID);             
+                user = await UserMapper.GetUserByID(userID);             
             if (user.Access == 0)
             {
-                    scores = ScoreMapper.GetScores();
-                    return Ok(new
-                {
-                    success = 1,
-                    scores = scores
-                });
-            }
-            else
-            {
-                    myScores = ScoreMapper.GetMyScores(userID);
+                    myScores = await ScoreMapper.GetMyScores(userID);
                     return Ok(new
                 {
                     success = 1,
                     scores = myScores
+                });
+            }
+            else
+            {
+                    scores = await ScoreMapper.GetScores();
+                    
+                    return Ok(new
+                {
+                    success = 1,
+                    scores = scores
                 });
             }
             }
@@ -55,14 +58,14 @@ namespace backend.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Score([FromBody] Score score)
+        public async Task<IActionResult> Score([FromBody] Score score)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
             User user;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
             if (user.Access == 0)
             {
                 return Ok(new
@@ -73,7 +76,7 @@ namespace backend.Controllers
             }
             else
             {
-                ScoreMapper.Score(score);
+                await ScoreMapper.Score(score);
                 return Ok(new {
                     success = 1,
                 });

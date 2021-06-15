@@ -8,6 +8,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
 using backend.Mappers;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,12 +18,12 @@ namespace backend.Controllers
     public class ReplyController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Reply([FromBody] Reply reply)
+        public async Task<IActionResult >Reply([FromBody] Reply reply)
         {
             try
             {
                 reply.ReplyTime = DateTime.Now;
-                ReplyMapper.Reply(reply);
+                await ReplyMapper.Reply(reply);
                 return Ok(new
                 {
                     success = 1
@@ -38,12 +40,12 @@ namespace backend.Controllers
 
         }
         [HttpGet("{postID}")]
-        public IActionResult GetReplys(int postID)
+        public async Task<IActionResult> GetReplys(int postID)
         {
             List<Reply> replys;
             try
             {
-                replys = ReplyMapper.GetReplys(postID);
+                replys = await ReplyMapper.GetReplys(postID);
                 return Ok(new
                 {
                     success = 1,

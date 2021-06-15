@@ -14,7 +14,7 @@
         "outputPath": "/Users/lykdsb/Desktop/repos/DormSystem/backend/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/lykdsb/.nuget/NuGet/NuGet.Config"
+          "/Users/lykdsb/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"

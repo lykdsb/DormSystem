@@ -8,6 +8,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
 using backend.Mappers;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,7 +18,7 @@ namespace backend.Controllers
     public class DormController:ControllerBase
     {
         [HttpGet]
-        public IActionResult GetDormInfo()
+        public async Task<IActionResult> GetDormInfo()
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -26,11 +28,11 @@ namespace backend.Controllers
             int dormID;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
                
             if (user.Access == 1)
             {
-                    userDorms = UserDormMapper.GetUserDorms();
+                    userDorms = await UserDormMapper.GetUserDorms();
                     return Ok(new
                 {
                     success = 1,
@@ -40,8 +42,8 @@ namespace backend.Controllers
             }
             else
             {
-                dormID = UserDormMapper.GetDormID(userID);
-                roomates = UserDormMapper.GetRoomates(dormID);
+                dormID = await UserDormMapper.GetDormID(userID);
+                roomates = await UserDormMapper.GetRoomates(dormID);
                 List<int> roomateID = new List<int>();
                 foreach (UserDorm ud in roomates)
                 {
@@ -67,7 +69,7 @@ namespace backend.Controllers
             }
         }
         [HttpPost]
-        public IActionResult ArrangeDorm([FromBody] UserDorm userDorm)
+        public async Task<IActionResult> ArrangeDorm([FromBody] UserDorm userDorm)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -76,11 +78,11 @@ namespace backend.Controllers
             int dormMaxNum;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
             if (user.Access == 1)
             {
-                    dormNum = UserDormMapper.GetDormNum(userDorm.DormID);
-                    dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
+                    dormNum = await UserDormMapper.GetDormNum(userDorm.DormID);
+                    dormMaxNum = await DormMapper.GetMaxNum(userDorm.DormID);
                     if (dormNum >= dormMaxNum)
                 {
                     return Ok(new
@@ -92,7 +94,7 @@ namespace backend.Controllers
                 else
                 {
 
-                    UserDormMapper.ArrangeDorm(userDorm);
+                    await UserDormMapper.ArrangeDorm(userDorm);
                     return Ok(
                         new {
                             success = 1,
@@ -118,7 +120,7 @@ namespace backend.Controllers
             }
         }
         [HttpPut]
-        public IActionResult ChangeDorm([FromBody] UserDorm userDorm)
+        public async Task<IActionResult> ChangeDorm([FromBody] UserDorm userDorm)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -127,19 +129,19 @@ namespace backend.Controllers
             int dormMaxNum;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
 
             if (user.Access == 1)
             {
-                    dormNum = UserDormMapper.GetDormNum(userDorm.DormID);
-                    dormMaxNum = DormMapper.GetMaxNum(userDorm.DormID);
+                    dormNum = await UserDormMapper.GetDormNum(userDorm.DormID);
+                    dormMaxNum = await DormMapper.GetMaxNum(userDorm.DormID);
                     if (dormNum >= dormMaxNum)
                 {
                     return Ok(new { success = 0, msg = "No more position" });
                 }
                 else
                 {
-                    UserDormMapper.ChangeDorm(userDorm);
+                    await UserDormMapper.ChangeDorm(userDorm);
                     return Ok(
                         new
                         {

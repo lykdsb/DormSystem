@@ -8,6 +8,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
 using backend.Mappers;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,12 +18,12 @@ namespace backend.Controllers
     public class PostController:ControllerBase
     {
         [HttpPost]
-        public IActionResult Post([FromBody]Post post)
+        public async Task<IActionResult> Post([FromBody]Post post)
         {
             try
             {
                 post.PostTime = DateTime.Now;
-                PostMapper.Post(post);
+                await PostMapper.Post(post);
                 return Ok(new
                 {
                     success = 1
@@ -38,12 +40,12 @@ namespace backend.Controllers
 
         }
         [HttpGet]
-        public IActionResult GetPosts()
+        public async Task<IActionResult> GetPosts()
         {
             List<Post> posts;
             try
             {
-                posts = PostMapper.GetPosts();
+                posts = await PostMapper.GetPosts();
                 return Ok(new
                 {
                     success = 1,

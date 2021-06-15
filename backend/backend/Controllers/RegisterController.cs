@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Mappers;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -11,12 +13,12 @@ namespace backend.Controllers
     {
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Submit([FromBody] User userInput)
+        public async Task<IActionResult> Submit([FromBody] User userInput)
         {
             int userID;
             try
             {
-                userID = UserMapper.AddUser(userInput);
+                userID = await UserMapper.AddUser(userInput);
                 return Ok(new
                 {
                     success = 1,

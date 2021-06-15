@@ -2,16 +2,18 @@
 using backend.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Mappers
 {
     public class UserMapper
     {
-        public static User GetUserByID(int userID)
+        public static async Task<User> GetUserByID(int userID)
         {
             User user;
             try
             {
-                user = DBContext.DBstatic.Queryable<User>().Single(c => c.UserID == userID);
+                user = await DBContext.DBstatic.Queryable<User>().SingleAsync(c => c.UserID == userID);
                 if (user == null) throw new Exception("No this user");
             }
             catch (Exception e)
@@ -20,13 +22,13 @@ namespace backend.Mappers
             }
             return user;
         }
-        public static int AddUser(User user)
+        public static async Task<int> AddUser(User user)
         {
             int userID;
             try
             {
-                DBContext.DBstatic.Insertable<User>(user).ExecuteCommand();
-                userID = DBContext.DBstatic.Queryable<User>().Max<int>("userID");
+                await DBContext.DBstatic.Insertable<User>(user).ExecuteCommandAsync();
+                userID = await DBContext.DBstatic.Queryable<User>().MaxAsync<int>("userID");
             }
             catch (Exception e)
             {
@@ -34,12 +36,12 @@ namespace backend.Mappers
             }
             return userID;
         }
-        public static List<User> GetUsers()
+        public static async Task<List<User>> GetUsers()
         {
             List<User> users;
             try
             {
-                users = DBContext.DBstatic.Queryable<User>().ToList();
+                users = await DBContext.DBstatic.Queryable<User>().ToListAsync();
             }
             catch (Exception e)
             {

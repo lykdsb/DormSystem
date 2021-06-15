@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using backend.Mappers;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -18,12 +19,12 @@ namespace backend.Controllers
     public class ChangeController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Submit([FromBody] ApplicationForChanging afc)
+        public async Task<IActionResult> Submit([FromBody] ApplicationForChanging afc)
         {
             try
             {
                 afc.ApplicationDate = DateTime.Today;
-                ChangeMapper.Submit(afc);
+                await ChangeMapper.Submit(afc);
                 return Ok(new
                 {
                     success = 1,
@@ -42,7 +43,7 @@ namespace backend.Controllers
 
         }
         [HttpGet]
-        public IActionResult GetApplications()
+        public async Task<IActionResult> GetApplications()
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -51,12 +52,12 @@ namespace backend.Controllers
             List<ApplicationForChanging> applicationsNotCompleted;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
                 
                 
             if (user.Access == 0)
             {
-                    myApplications = ChangeMapper.GetMine(userID);
+                    myApplications = await ChangeMapper.GetMine(userID);
                     return Ok(new
                 {
                     success = 1,
@@ -65,7 +66,7 @@ namespace backend.Controllers
             }
             else
             {
-                    applicationsNotCompleted = ChangeMapper.GetNotCompleted();
+                    applicationsNotCompleted = await ChangeMapper.GetNotCompleted();
                     return Ok(new
                 {
                     success = 1,
@@ -83,11 +84,11 @@ namespace backend.Controllers
             }
         }
         [HttpPatch("{applicationID}")]
-        public IActionResult Deal(int applicationID)
+        public async Task<IActionResult> Deal(int applicationID)
         {
             try
             {
-                ChangeMapper.Deal(applicationID);
+                await ChangeMapper.Deal(applicationID);
                 return Ok(new
                 {
                     success = 1,

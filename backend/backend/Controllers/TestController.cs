@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -10,9 +11,13 @@ namespace backend.Controllers
     {
 
         [HttpGet]
-        public String Get()
+        public async Task<String> Get()
         {
-            return "Connected";
+            return await Task.Run<string>(test);
+        }
+        public static string test()
+        {
+            return "test";
         }
     }
 }

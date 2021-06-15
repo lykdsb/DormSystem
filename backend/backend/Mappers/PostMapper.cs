@@ -2,28 +2,30 @@
 using backend.Configs;
 using backend.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Mappers
 {
     public class PostMapper
     {
-        public static void Post(Post post)
+        public static async Task Post(Post post)
         {
             try
             {
                 post.PostTime = DateTime.Now;
-                DBContext.DBstatic.Insertable<Post>(post).ExecuteCommand();
+                await DBContext.DBstatic.Insertable<Post>(post).ExecuteCommandAsync();
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public static List<Post> GetPosts()
+        public static async Task<List<Post>> GetPosts()
         {
             List<Post> posts;
             try
             {
-                posts = DBContext.DBstatic.Queryable<Post>().ToList();
+                posts = await DBContext.DBstatic.Queryable<Post>().ToListAsync();
             }
             catch (Exception e)
             {

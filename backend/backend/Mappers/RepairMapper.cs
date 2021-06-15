@@ -2,17 +2,19 @@
 using backend.Configs;
 using backend.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Mappers
 {
     public class RepairMapper
     {
 
-        public static ApplicationForRepairing GetAfrByID(int applicationId)
+        public static async Task<ApplicationForRepairing> GetAfrByID(int applicationId)
         {
             ApplicationForRepairing afr;
             try
             {
-                afr = DBContext.DBstatic.Queryable<ApplicationForRepairing>().Single(c => c.ApplicationID == applicationId);
+                afr = await DBContext.DBstatic.Queryable<ApplicationForRepairing>().SingleAsync(c => c.ApplicationID == applicationId);
                 if (afr == null) throw new Exception("No this application");
             }
             catch (Exception e)
@@ -22,23 +24,23 @@ namespace backend.Mappers
             return afr;
         }
 
-        public static void Submit(ApplicationForRepairing afr)
+        public static async Task Submit(ApplicationForRepairing afr)
         {
             try
             {
-                DBContext.DBstatic.Insertable<ApplicationForRepairing>(afr).ExecuteCommand();
+                await DBContext.DBstatic.Insertable<ApplicationForRepairing>(afr).ExecuteCommandAsync();
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public static void Deal(int applicationID)
+        public static async Task Deal(int applicationID)
         {
             ApplicationForRepairing afr;
             try
             {
-                afr = GetAfrByID(applicationID);
+                afr = await GetAfrByID(applicationID);
                 if (afr.IsCompleted == 1)
                 {
                     throw new Exception("This application is completed");
@@ -46,7 +48,7 @@ namespace backend.Mappers
                 else
                 {
                     afr.IsCompleted = 1;
-                    DBContext.DBstatic.Updateable<ApplicationForRepairing>(afr).ExecuteCommand();
+                    await DBContext.DBstatic.Updateable<ApplicationForRepairing>(afr).ExecuteCommandAsync();
                 }
             }
             catch (Exception e)
@@ -55,12 +57,12 @@ namespace backend.Mappers
             }
 
         }
-        public static List<ApplicationForRepairing> GetNotCompleted()
+        public static async Task<List<ApplicationForRepairing>> GetNotCompleted()
         {
             List<ApplicationForRepairing>afrs;
             try
             {
-                afrs = DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>("select * from ApplicationForRepairing where isCompleted=1").ToList();
+                afrs = await DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>("select * from ApplicationForRepairing where isCompleted=1").ToListAsync();
 
             }
             catch (Exception e)
@@ -69,12 +71,12 @@ namespace backend.Mappers
             }
             return afrs;
         }
-        public static List<ApplicationForRepairing> GetMine(int userID)
+        public static async Task<List<ApplicationForRepairing>> GetMine(int userID)
         {
             List<ApplicationForRepairing> afrs;
             try
             {
-                afrs = DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>($"select * from ApplicationForRepairing where userID = {userID}").ToList();
+                afrs = await DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>($"select * from ApplicationForRepairing where userID = {userID}").ToListAsync();
 
             }
             catch (Exception e)

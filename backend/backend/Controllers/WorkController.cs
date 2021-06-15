@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -15,7 +17,7 @@ namespace backend.Controllers
     public class WorkController : ControllerBase
     {
         [HttpPost]
-        public IActionResult ArrageWork([FromBody] Work work)
+        public async Task<IActionResult> ArrageWork([FromBody] Work work)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -23,8 +25,8 @@ namespace backend.Controllers
             UserDorm userDorm;
             try
             {
-                user = UserMapper.GetUserByID(userID);
-                userDorm = UserDormMapper.GetUserDormByUserID(userID);
+                user = await UserMapper.GetUserByID(userID);
+                userDorm = await UserDormMapper.GetUserDormByUserID(userID);
             if (user.Access == 1 || userDorm.IsLeader == 0)
             {
                 return Ok(new
@@ -35,7 +37,7 @@ namespace backend.Controllers
             }
             else
             {
-                WorkMapper.ArrageWork(work);
+                await WorkMapper.ArrageWork(work);
                 return Ok(new
                 {
                     success = 1,
@@ -52,7 +54,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet]
-        public IActionResult GetMyWorks()
+        public async Task<IActionResult> GetMyWorks()
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -60,8 +62,8 @@ namespace backend.Controllers
             List<Work> works;
             try
             {
-                user = UserMapper.GetUserByID(userID);
-                works = WorkMapper.GetWorks(userID);
+                user = await UserMapper.GetUserByID(userID);
+                works = await WorkMapper.GetWorks(userID);
             return Ok(new
             {
                 success = 1,
@@ -80,11 +82,11 @@ namespace backend.Controllers
             }
         }
         [HttpPatch("{workID}")]
-        public IActionResult Done(int workID)
+        public async Task<IActionResult> Done(int workID)
         {
             try
             {
-            WorkMapper.Done(workID);
+            await WorkMapper.Done(workID);
             return Ok(new
             {
                 success = 1,

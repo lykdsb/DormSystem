@@ -2,16 +2,18 @@
 using backend.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Mappers
 {
     public class WorkMapper
     {
-        public static Work GetWorkByID(int workID)
+        public static async Task<Work> GetWorkByID(int workID)
         {
             Work work;
             try
             {
-                work = DBContext.DBstatic.Queryable<Work>().Single(c => c.WorkID == workID);
+                work = await DBContext.DBstatic.Queryable<Work>().SingleAsync(c => c.WorkID == workID);
                 if (work == null)
                     throw new Exception("No this work");
             }
@@ -22,23 +24,23 @@ namespace backend.Mappers
             return work;
 
         }
-        public static void ArrageWork(Work work)
+        public static async Task ArrageWork(Work work)
         {
             try
             {
-                DBContext.DBstatic.Insertable<Work>(work).ExecuteCommand();
+                await DBContext.DBstatic.Insertable<Work>(work).ExecuteCommandAsync();
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public static List<Work> GetWorks(int userID)
+        public static async Task<List<Work>> GetWorks(int userID)
         {
             List<Work> works;
             try
             {
-                works = DBContext.DBstatic.Queryable<Work>().Where(c => c.UserID == userID).ToList();
+                works = await DBContext.DBstatic.Queryable<Work>().Where(c => c.UserID == userID).ToListAsync();
             }
             catch (Exception e)
             {
@@ -46,12 +48,12 @@ namespace backend.Mappers
             }
             return works;
         }
-        public static void Done(int workID)
+        public static async Task Done(int workID)
         {
             Work work;
             try
             {
-                work = GetWorkByID(workID);
+                work = await GetWorkByID(workID);
                 if (work.IsCompleted == 1)
                 {
                     throw new Exception("This work is completed");
@@ -59,7 +61,7 @@ namespace backend.Mappers
                 else
                 {
                     work.IsCompleted = 1;
-                    DBContext.DBstatic.Updateable<Work>(work).ExecuteCommand();
+                    await DBContext.DBstatic.Updateable<Work>(work).ExecuteCommandAsync();
                 }
             }
             catch (Exception e)

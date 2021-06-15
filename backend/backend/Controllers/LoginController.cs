@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.Mappers;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -16,14 +18,14 @@ namespace backend.Controllers
     {
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Submit([FromBody] User userInput)
+        public async Task<IActionResult> Submit([FromBody] User userInput)
         {
             var userID = userInput.UserID;
             var password = userInput.Password;
             User user;
             try
             {
-                user = UserMapper.GetUserByID(userID);
+                user = await UserMapper.GetUserByID(userID);
             if (!password.Equals(user.Password))
             {
                 return Ok(new

@@ -2,16 +2,18 @@
 using backend.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace backend.Mappers
 {
     public class UserDormMapper
     {
-        public static List<UserDorm> GetUserDorms()
+        public static async Task<List<UserDorm>> GetUserDorms()
         {
             List<UserDorm> userDorms;
             try
             {
-                userDorms = DBContext.DBstatic.Queryable<UserDorm>().ToList();
+                userDorms = await DBContext.DBstatic.Queryable<UserDorm>().ToListAsync();
             }
             catch (Exception e)
             {
@@ -19,12 +21,12 @@ namespace backend.Mappers
             }
             return userDorms;
         }
-        public static UserDorm GetUserDormByUserID(int userID)
+        public static async Task<UserDorm> GetUserDormByUserID(int userID)
         {
             UserDorm userDorm;
             try
             {
-                userDorm = DBContext.DBstatic.Queryable<UserDorm>().Single(c => c.UserID == userID);
+                userDorm = await DBContext.DBstatic.Queryable<UserDorm>().SingleAsync(c => c.UserID == userID);
                 if (userDorm == null) throw new Exception("No this userDorm");
             }
             catch (Exception e)
@@ -33,12 +35,14 @@ namespace backend.Mappers
             }
             return userDorm;
         }
-        public static int GetDormID(int userID)
+        public static async Task<int> GetDormID(int userID)
         {
             int dormID;
+            UserDorm userDorm;
             try
             {
-                dormID = GetUserDormByUserID(userID).DormID;
+                userDorm = await GetUserDormByUserID(userID);
+                dormID = userDorm.DormID;
             }
             catch (Exception e)
             {
@@ -47,12 +51,12 @@ namespace backend.Mappers
             return dormID;
         }
 
-        public static List<UserDorm> GetRoomates(int dormID)
+        public static async Task<List<UserDorm>> GetRoomates(int dormID)
         {
             List<UserDorm> roomates;
             try
             {
-                roomates = DBContext.DBstatic.Queryable<UserDorm>().Where(c => c.DormID == dormID).ToList();
+                roomates = await DBContext.DBstatic.Queryable<UserDorm>().Where(c => c.DormID == dormID).ToListAsync();
             }
             catch (Exception e)
             {
@@ -60,12 +64,14 @@ namespace backend.Mappers
             }
             return roomates;
         }
-        public static int GetDormNum(int dormID)
+        public static async Task<int> GetDormNum(int dormID)
         {
             int num = 0;
+            List<UserDorm> userDorms;
             try
             {
-                num = DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from UserDorm where dormID = {dormID}").ToList().Count;
+                userDorms = await DBContext.DBstatic.SqlQueryable<UserDorm>($"select * from UserDorm where dormID = {dormID}").ToListAsync();
+                num = userDorms.Count;
             }
             catch (Exception e)
             {
@@ -73,30 +79,30 @@ namespace backend.Mappers
             }
             return num;
         }
-        public static void ArrangeDorm(UserDorm userDorm)
+        public static async Task ArrangeDorm(UserDorm userDorm)
         {
             try
             {
-                DBContext.DBstatic.Insertable<UserDorm>(userDorm).ExecuteCommand();
+                await DBContext.DBstatic.Insertable<UserDorm>(userDorm).ExecuteCommandAsync();
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public static void ChangeDorm(UserDorm userDorm)
+        public static async Task ChangeDorm(UserDorm userDorm)
         {
             try
             {
                 if (userDorm.IsLeader == 1)
                 {
-                    List<UserDorm> roomates=GetRoomates(userDorm.DormID);
+                    List<UserDorm> roomates=await GetRoomates(userDorm.DormID);
                     foreach (UserDorm ud in roomates)
                     {
                         if (ud.IsLeader == 1) throw new Exception("There`s already a leader");
                     }
                 }
-                DBContext.DBstatic.Updateable<UserDorm>(userDorm).ExecuteCommand();
+                await DBContext.DBstatic.Updateable<UserDorm>(userDorm).ExecuteCommandAsync();
             }
             catch (Exception e)
             {
