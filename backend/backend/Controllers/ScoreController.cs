@@ -17,8 +17,8 @@ namespace backend.Controllers
     public class ScoreController:ControllerBase
     {
 
-        [HttpGet]
-        public async Task<IActionResult> GetScores()
+        [HttpGet("{weekNum}")]
+        public async Task<IActionResult> GetScores(int weekNum)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -30,7 +30,7 @@ namespace backend.Controllers
                 user = await UserMapper.GetUserByID(userID);             
             if (user.Access == 0)
             {
-                    myScores = await ScoreMapper.GetMyScores(userID);
+                    myScores = await ScoreMapper.GetMyScores(userID,weekNum);
                     return Ok(new
                 {
                     success = 1,
@@ -39,7 +39,7 @@ namespace backend.Controllers
             }
             else
             {
-                    scores = await ScoreMapper.GetScores();
+                    scores = await ScoreMapper.GetScores(weekNum);
                     
                     return Ok(new
                 {
@@ -58,7 +58,7 @@ namespace backend.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Score([FromBody] Score score)
+        public async Task<IActionResult> Score([FromBody] List<Score> score)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
