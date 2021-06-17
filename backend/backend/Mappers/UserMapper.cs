@@ -49,5 +49,18 @@ namespace backend.Mappers
             }
             return users;
         }
+        public static async Task<List<User>> GetUsersIsNotArranged()
+        {
+            List<User> users;
+            try
+            {
+                users =  await DBContext.DBstatic.SqlQueryable<User>($"select * from User where userID not in (select userID from UserDorm)").ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return users;
+        }
     }
 }

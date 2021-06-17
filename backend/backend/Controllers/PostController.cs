@@ -43,13 +43,19 @@ namespace backend.Controllers
         public async Task<IActionResult> GetPosts()
         {
             List<Post> posts;
+            List<string> userNames=new List<string>();
             try
             {
                 posts = await PostMapper.GetPosts();
+                foreach (Post post in posts)
+                {
+                    userNames.Add((await UserMapper.GetUserByID(post.UserID)).UserName);
+                }
                 return Ok(new
                 {
                     success = 1,
-                    posts = posts
+                    posts = posts,
+                    userNames = userNames
                 });
             }
             catch (Exception e)

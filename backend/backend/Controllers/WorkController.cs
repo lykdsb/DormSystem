@@ -70,8 +70,6 @@ namespace backend.Controllers
                 works = works
             });
             }
-
-
             catch (Exception e)
             {
                 return Ok(new

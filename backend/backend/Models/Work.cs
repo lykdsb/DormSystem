@@ -10,6 +10,5 @@ namespace backend.Models
         public DateTime WorkDate { get; set; }
         public string WorkName { get; set; }
         public int IsCompleted { get; set; }
-
     }
 }

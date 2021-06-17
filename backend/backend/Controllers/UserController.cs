@@ -14,10 +14,10 @@ namespace backend.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class UserController:ControllerBase
+    public class UserController : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(bool isNotArranged)
         {
             var auth = HttpContext.AuthenticateAsync();
             var userID = Convert.ToInt32(auth.Result.Principal.Claims.First(t => t.Type.Equals(ClaimTypes.NameIdentifier))?.Value);
@@ -39,18 +39,36 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    users = await UserMapper.GetUsers();
-                    foreach (User u in users)
+                    if (isNotArranged == false)
                     {
-                        u.Password = "";
+                        users = await UserMapper.GetUsers();
+                        foreach (User u in users)
+                        {
+                            u.Password = "";
+                        }
+                        return Ok(
+                         new
+                         {
+                             success = 1,
+                             userList = users
+                         }
+                         );
                     }
-                    return Ok(
-                     new
-                     {
-                         success = 1,
-                         userList = users
-                     }
-                     );
+                    else
+                    {
+                        users = await UserMapper.GetUsersIsNotArranged();
+                        foreach (User u in users)
+                        {
+                            u.Password = "";
+                        }
+                        return Ok(
+                         new
+                         {
+                             success = 1,
+                             userList = users
+                         }
+                         );
+                    }
                 }
             }
             catch (Exception e)
