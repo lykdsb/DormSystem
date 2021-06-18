@@ -62,7 +62,7 @@ namespace backend.Mappers
             List<ApplicationForRepairing>afrs;
             try
             {
-                afrs = await DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>("select * from ApplicationForRepairing where isCompleted=1").ToListAsync();
+                afrs = await DBContext.DBstatic.SqlQueryable<ApplicationForRepairing>("select * from ApplicationForRepairing where isCompleted=0").ToListAsync();
 
             }
             catch (Exception e)

@@ -44,17 +44,18 @@ namespace backend.Controllers
             {
                 dormID = await UserDormMapper.GetDormID(userID);
                 roomates = await UserDormMapper.GetRoomates(dormID);
-                List<int> roomateID = new List<int>();
+                List<User> roomateNames = new List<User>();
                 foreach (UserDorm ud in roomates)
                 {
-                    roomateID.Add(ud.UserID);
+                    
+                    roomateNames.Add(await UserMapper.GetUserByID(ud.UserID));
                 }
                 return Ok(
                     new
                     {
                         success = 1,
                         dormID = dormID,
-                        roomateID = roomateID
+                        roomates = roomateNames
                     }
                     );
             }

@@ -61,7 +61,7 @@ namespace backend.Mappers
             List<ApplicationForChanging> afcs;
             try
             {
-                afcs = await DBContext.DBstatic.SqlQueryable<ApplicationForChanging>("select * from ApplicationForChanging where isCompleted=1").ToListAsync();
+                afcs = await DBContext.DBstatic.SqlQueryable<ApplicationForChanging>("select * from ApplicationForChanging where isCompleted=0").ToListAsync();
 
             }
             catch (Exception e)
